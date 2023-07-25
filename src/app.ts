@@ -1,12 +1,20 @@
-'use strict';
+import { join } from 'path';
+import AutoLoad, {AutoloadPluginOptions} from '@fastify/autoload';
+import { FastifyPluginAsync } from 'fastify';
 
-import path from 'path';
-import AutoLoad from '@fastify/autoload';
+export type AppOptions = {
+  // Place your custom options for app below here.
+} & Partial<AutoloadPluginOptions>;
+
 
 // Pass --options via CLI arguments in command to enable these options.
-export const options = {};
+const options: AppOptions = {
+}
 
-export default async function (fastify: any, opts: any) {
+const app: FastifyPluginAsync<AppOptions> = async (
+    fastify,
+    opts
+): Promise<void> => {
   // Place here your custom code!
 
   // Do not touch the following lines
@@ -14,15 +22,19 @@ export default async function (fastify: any, opts: any) {
   // This loads all plugins defined in plugins
   // those should be support plugins that are reused
   // through your application
-  fastify.register(AutoLoad, {
-    dir: path.join(__dirname, 'plugins'),
-    options: Object.assign({}, opts),
-  });
+  void fastify.register(AutoLoad, {
+    dir: join(__dirname, 'plugins'),
+    options: opts
+  })
 
   // This loads all plugins defined in routes
   // define your routes in one of these
-  fastify.register(AutoLoad, {
-    dir: path.join(__dirname, 'routes'),
-    options: Object.assign({}, opts),
-  });
-}
+  void fastify.register(AutoLoad, {
+    dir: join(__dirname, 'routes'),
+    options: opts
+  })
+
+};
+
+export default app;
+export { app, options }

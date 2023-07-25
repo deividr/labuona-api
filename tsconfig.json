@@ -1,14 +1,8 @@
 {
+  "extends": "fastify-tsconfig",
   "compilerOptions": {
-    "target": "es2017" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
-    "module": "commonjs" /* Specify what module code is generated. */,
-    "outDir": "./dist",
-    "rootDir": "./src" /* Specify the root folder within your source files. */,
-    "baseUrl": "./" /* Specify the base directory to resolve non-relative module names. */,
-    "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,
-    "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
-    "strict": true /* Enable all strict type-checking options. */,
-    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
-    "paths": {} /* Specify a set of entries that re-map imports to additional lookup locations. */
-  }
+    "outDir": "dist",
+    "sourceMap": true
+  },
+  "include": ["src/**/*.ts"]
 }
