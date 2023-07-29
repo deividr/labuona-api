@@ -2,7 +2,13 @@
   "extends": "fastify-tsconfig",
   "compilerOptions": {
     "outDir": "dist",
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@controllers/*": ["./src/presentation/controllers/*"],
+      "@validations/*": ["./src/presentation/validations/*"],
+      "@presentation/protocols": ["./src/presentation/protocols"]
+    }
   },
   "include": ["src/**/*.ts"]
 }
