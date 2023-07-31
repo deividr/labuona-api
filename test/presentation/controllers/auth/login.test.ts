@@ -1,36 +1,57 @@
 import type { Validation } from '@presentation/protocols';
 
 import LoginController from '../../../../src/presentation/controllers/auth/login-controller';
+import type { LoginRequest } from '../../../../src/presentation/controllers/auth/login-controller';
 
 import { test } from 'tap';
 import { faker } from '@faker-js/faker';
 
 const makeSut = () => {
-  let body: any = {};
+  let loginRequest: LoginRequest = {
+    username: '',
+    password: '',
+  };
 
   const validationStub: Validation = {
-    validate: (bodyReceived: any) => {
-      body.username = bodyReceived.username;
-      body.password = bodyReceived.password;
+    validate: (loginRequestReceived: any) => {
+      loginRequest.username = loginRequestReceived.username;
+      loginRequest.password = loginRequestReceived.password;
       return { ok: true, message: '' };
     },
   };
 
   const sut = LoginController(validationStub);
 
-  return { sut, value: body };
+  return { sut, validationStub, loginRequest };
 };
 
+const mockRequest = (): LoginRequest => ({
+  username: faker.person.firstName(),
+  password: faker.internet.password(),
+});
+
 test('should call validation method with correct values', async (t) => {
-  const { sut, value } = makeSut();
-  const valueSend: any = {
-    username: faker.person.firstName(),
-    password: faker.internet.password(),
+  const { sut, loginRequest } = makeSut();
+  const loginRequestSend = mockRequest();
+
+  sut.handle(loginRequestSend);
+
+  Object.keys(loginRequestSend).map((key) => {
+    t.equal(
+      loginRequest[key as keyof LoginRequest],
+      loginRequestSend[key as keyof LoginRequest]
+    );
+  });
+});
+
+test('should return 500 if validation throw an error', async (t) => {
+  const { sut, validationStub } = makeSut();
+
+  validationStub.validate = () => {
+    throw new Error('Deu erro nessa merda');
   };
 
-  sut.handle(valueSend);
+  const result = await sut.handle(mockRequest());
 
-  Object.keys(valueSend).map((key) => {
-    t.equal(value[key], valueSend[key]);
-  });
+  t.match(result, { statusCode: 500 });
 });

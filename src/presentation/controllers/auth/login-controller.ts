@@ -1,15 +1,20 @@
 import type { Validation, Controller } from '@presentation/protocols';
 
-export type LoginControllerBody = {
+export type LoginRequest = {
   username: string;
   password: string;
 };
 
 function LoginController(
   validation: Validation
-): Controller<LoginControllerBody> {
-  const handle = (body: LoginControllerBody) => {
-    validation.validate(body);
+): Controller<LoginRequest, void> {
+  const handle = async (body: LoginRequest) => {
+    try {
+      validation.validate(body);
+      return { statusCode: 200 };
+    } catch (error) {
+      return { statusCode: 500 };
+    }
   };
 
   return {

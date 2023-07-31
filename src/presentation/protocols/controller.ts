@@ -1,3 +1,5 @@
-export type Controller<T> = {
-  handle: (values: T) => any;
+import { HttpResponse } from './http-response';
+
+export type Controller<T, R> = {
+  handle: (values: T) => Promise<HttpResponse<R>>;
 };
