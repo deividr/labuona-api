@@ -1,4 +1,5 @@
-import type { Validation, Controller } from '@presentation/protocols';
+import { Controller, Validation } from '@presentation/protocols';
+import { noContent, serverError } from '../../helpers';
 
 export type LoginRequest = {
   username: string;
@@ -11,9 +12,9 @@ function LoginController(
   const handle = async (body: LoginRequest) => {
     try {
       validation.validate(body);
-      return { statusCode: 200 };
-    } catch (error) {
-      return { statusCode: 500 };
+      return noContent();
+    } catch (error: any) {
+      return serverError(error);
     }
   };
 
