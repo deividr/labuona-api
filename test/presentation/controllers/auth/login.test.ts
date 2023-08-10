@@ -1,5 +1,5 @@
 import LoginController from '../../../../src/presentation/controllers/auth/login-controller';
-import { serverError } from '../../../../src/presentation/helpers';
+import { serverError, badRequest } from '../../../../src/presentation/helpers';
 
 import type { LoginRequest } from '../../../../src/presentation/controllers/auth/login-controller';
 
@@ -45,7 +45,7 @@ test('should call validation method with correct values', async (t) => {
   });
 });
 
-test('should return 500 if validation throw an error', async (t) => {
+test('should return 500 if validation throw', async (t) => {
   const { sut, validationStub } = makeSut();
 
   const errorMessage = 'Validation throw error';
@@ -57,4 +57,18 @@ test('should return 500 if validation throw an error', async (t) => {
   const result = await sut.handle(mockRequest());
 
   t.match(result, serverError(new Error(errorMessage)));
+});
+
+test('shoul return 400 if validation return a error', async (t) => {
+  const { sut, validationStub } = makeSut();
+
+  const errorToReturn = { ok: false, message: 'Username invalid' };
+
+  validationStub.validate = () => {
+    return errorToReturn;
+  };
+
+  const response = await sut.handle(mockRequest());
+
+  t.same(response, badRequest(errorToReturn));
 });

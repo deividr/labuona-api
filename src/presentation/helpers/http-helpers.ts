@@ -19,3 +19,10 @@ export const serverError = (error: Error): HttpResponse<any> => {
     body: error,
   };
 };
+
+export const badRequest = (body?: any): HttpResponse<any> => {
+  return {
+    statusCode: 400,
+    body,
+  };
+};
