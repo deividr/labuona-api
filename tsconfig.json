@@ -6,6 +6,7 @@
     "baseUrl": ".",
     "paths": {
       "@controllers/*": ["./src/presentation/controllers/*"],
+      "@usecases/*": ["./src/domain/usecases/*"],
       "@validations/*": ["./src/presentation/validations/*"],
       "@presentation/protocols": ["./src/presentation/protocols"]
     }

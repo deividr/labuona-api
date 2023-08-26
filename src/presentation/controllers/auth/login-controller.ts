@@ -1,5 +1,6 @@
-import { Controller, Validation } from '@presentation/protocols';
-import { badRequest, noContent, serverError } from '../../helpers';
+import { Controller, Validation } from "@presentation/protocols";
+import { Authentication } from "@usecases/authentication";
+import { badRequest, noContent, serverError } from "../../helpers";
 
 export type LoginRequest = {
   username: string;
@@ -7,15 +8,18 @@ export type LoginRequest = {
 };
 
 function LoginController(
-  validation: Validation
+  validation: Validation,
+  authentication: Authentication
 ): Controller<LoginRequest, void> {
   const handle = async (body: LoginRequest) => {
     try {
-      const result = validation.validate(body);
+      const validationResult = validation.validate(body);
 
-      if (!result.ok) {
-        return badRequest(result);
+      if (!validationResult.ok) {
+        return badRequest(validationResult);
       }
+
+      await authentication.auth(body);
 
       return noContent();
     } catch (error: any) {

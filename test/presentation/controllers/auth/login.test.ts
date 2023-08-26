@@ -6,6 +6,7 @@ import type { LoginRequest } from '../../../../src/presentation/controllers/auth
 import { test } from 'tap';
 import { faker } from '@faker-js/faker';
 import { Validation } from '@presentation/protocols';
+import { Authentication, AuthenticationParams } from '@usecases/authentication';
 
 const makeSut = () => {
   let loginRequest: LoginRequest = {
@@ -13,17 +14,42 @@ const makeSut = () => {
     password: '',
   };
 
+  let authenticationParams: AuthenticationParams = {
+    username: '',
+    password: '',
+  };
+
   const validationStub: Validation = {
     validate: (loginRequestReceived: any) => {
-      loginRequest.username = loginRequestReceived.username;
-      loginRequest.password = loginRequestReceived.password;
+      Object.keys(loginRequest).forEach(
+        (key: string) =>
+          (loginRequest[key as keyof AuthenticationParams] =
+            loginRequestReceived[key as keyof AuthenticationParams])
+      );
       return { ok: true, message: '' };
     },
   };
 
-  const sut = LoginController(validationStub);
+  const authentication: Authentication = {
+    auth: async (authenticationParamsReceived: AuthenticationParams) => {
+      Object.keys(authenticationParams).forEach(
+        (key: string) =>
+          (authenticationParams[key as keyof AuthenticationParams] =
+            authenticationParamsReceived[key as keyof AuthenticationParams])
+      );
+      return { token: faker.string.uuid() };
+    },
+  };
 
-  return { sut, validationStub, loginRequest };
+  const sut = LoginController(validationStub, authentication);
+
+  return {
+    sut,
+    validationStub,
+    loginRequest,
+    authenticationParams,
+    authentication,
+  };
 };
 
 const mockRequest = (): LoginRequest => ({
@@ -31,7 +57,7 @@ const mockRequest = (): LoginRequest => ({
   password: faker.internet.password(),
 });
 
-test('should call validation method with correct values', async (t) => {
+test('should call Validation method with correct values', async (t) => {
   const { sut, loginRequest } = makeSut();
   const loginRequestSend = mockRequest();
 
@@ -45,7 +71,7 @@ test('should call validation method with correct values', async (t) => {
   });
 });
 
-test('should return 500 if validation throw', async (t) => {
+test('should return 500 if Validation throw', async (t) => {
   const { sut, validationStub } = makeSut();
 
   const errorMessage = 'Validation throw error';
@@ -59,7 +85,7 @@ test('should return 500 if validation throw', async (t) => {
   t.match(result, serverError(new Error(errorMessage)));
 });
 
-test('shoul return 400 if validation return a error', async (t) => {
+test('should return 400 if Validation return a error', async (t) => {
   const { sut, validationStub } = makeSut();
 
   const errorToReturn = { ok: false, message: 'Username invalid' };
@@ -70,5 +96,19 @@ test('shoul return 400 if validation return a error', async (t) => {
 
   const response = await sut.handle(mockRequest());
 
-  t.same(response, badRequest(errorToReturn));
+  t.same(response, badRequest({ ...errorToReturn }));
+});
+
+test('should call Authentication with correct values', async (t) => {
+  const { sut, authenticationParams } = makeSut();
+  const request = mockRequest();
+
+  await sut.handle(request);
+
+  Object.keys(request).map((key) => {
+    t.equal(
+      authenticationParams[key as keyof LoginRequest],
+      request[key as keyof LoginRequest]
+    );
+  });
 });
