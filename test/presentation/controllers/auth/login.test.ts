@@ -1,7 +1,10 @@
 import LoginController from '../../../../src/presentation/controllers/auth/login-controller';
 import { serverError, badRequest } from '../../../../src/presentation/helpers';
 
-import type { LoginRequest } from '../../../../src/presentation/controllers/auth/login-controller';
+import type {
+  LoginRequest,
+  LoginResponse,
+} from '../../../../src/presentation/controllers/auth/login-controller';
 
 import { test } from 'tap';
 import { faker } from '@faker-js/faker';
@@ -18,6 +21,8 @@ const makeSut = () => {
     username: '',
     password: '',
   };
+
+  let authenticationReturn: LoginResponse = { token: faker.string.uuid() };
 
   const validationStub: Validation = {
     validate: (loginRequestReceived: any) => {
@@ -37,7 +42,7 @@ const makeSut = () => {
           (authenticationParams[key as keyof AuthenticationParams] =
             authenticationParamsReceived[key as keyof AuthenticationParams])
       );
-      return { token: faker.string.uuid() };
+      return authenticationReturn;
     },
   };
 
@@ -49,6 +54,7 @@ const makeSut = () => {
     loginRequest,
     authenticationParams,
     authentication,
+    authenticationReturn,
   };
 };
 
@@ -125,4 +131,12 @@ test('should return 500 if Authentication throw', async (t) => {
   const request = mockRequest();
   const result = await sut.handle(request);
   t.match(result, serverError(new Error(errorMessage)));
+});
+
+test('should return 200 if Authentication success', async (t) => {
+  const { sut, authenticationReturn } = makeSut();
+  const request = mockRequest();
+  const result = await sut.handle(request);
+  t.equal(result.statusCode, 200);
+  t.equal(result.body, authenticationReturn);
 });

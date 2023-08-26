@@ -1,16 +1,20 @@
-import { Controller, Validation } from "@presentation/protocols";
-import { Authentication } from "@usecases/authentication";
-import { badRequest, noContent, serverError } from "../../helpers";
+import { Controller, Validation } from '@presentation/protocols';
+import { Authentication } from '@usecases/authentication';
+import { badRequest, ok, serverError } from '../../helpers';
 
 export type LoginRequest = {
   username: string;
   password: string;
 };
 
+export type LoginResponse = {
+  token: string;
+};
+
 function LoginController(
   validation: Validation,
   authentication: Authentication
-): Controller<LoginRequest, void> {
+): Controller<LoginRequest, LoginResponse> {
   const handle = async (body: LoginRequest) => {
     try {
       const validationResult = validation.validate(body);
@@ -19,9 +23,9 @@ function LoginController(
         return badRequest(validationResult);
       }
 
-      await authentication.auth(body);
+      const response = await authentication.auth(body);
 
-      return noContent();
+      return ok(response);
     } catch (error: any) {
       return serverError(error);
     }
