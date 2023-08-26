@@ -112,3 +112,17 @@ test('should call Authentication with correct values', async (t) => {
     );
   });
 });
+
+test('should return 500 if Authentication throw', async (t) => {
+  const { sut, authentication } = makeSut();
+
+  const errorMessage = 'Authentication is failed';
+
+  authentication.auth = () => {
+    throw new Error(errorMessage);
+  };
+
+  const request = mockRequest();
+  const result = await sut.handle(request);
+  t.match(result, serverError(new Error(errorMessage)));
+});
