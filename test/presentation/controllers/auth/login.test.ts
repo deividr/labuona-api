@@ -1,46 +1,49 @@
-import LoginController from '../../../../src/presentation/controllers/auth/login-controller';
-import { serverError, badRequest } from '../../../../src/presentation/helpers';
+import LoginController from "../../../../src/presentation/controllers/auth/login-controller";
+import { serverError, badRequest } from "../../../../src/presentation/helpers";
 
-import type {
-  LoginRequest,
-  LoginResponse,
-} from '../../../../src/presentation/controllers/auth/login-controller';
+import { test } from "tap";
+import { faker } from "@faker-js/faker";
+import { Validation } from "@presentation/protocols";
+import {
+  Authentication,
+  AuthenticationParams,
+  AuthenticationReturn,
+} from "@usecases/authentication";
 
-import { test } from 'tap';
-import { faker } from '@faker-js/faker';
-import { Validation } from '@presentation/protocols';
-import { Authentication, AuthenticationParams } from '@usecases/authentication';
+const loginRequest: AuthenticationParams = {
+  username: "",
+  password: "",
+};
+
+const authenticationParams: AuthenticationParams = {
+  username: "",
+  password: "",
+};
+
+class AuthenticationValidation implements Validation<AuthenticationParams> {
+  async validate(loginRequestReceived: any) {
+    Object.keys(loginRequest).forEach(
+      (key: string) =>
+        (loginRequest[key as keyof AuthenticationParams] =
+          loginRequestReceived[key as keyof AuthenticationParams]),
+    );
+    return { ok: true, message: "" };
+  }
+}
 
 const makeSut = () => {
-  let loginRequest: LoginRequest = {
-    username: '',
-    password: '',
+  const authenticationReturn: AuthenticationReturn = {
+    token: faker.string.uuid(),
   };
 
-  let authenticationParams: AuthenticationParams = {
-    username: '',
-    password: '',
-  };
-
-  let authenticationReturn: LoginResponse = { token: faker.string.uuid() };
-
-  const validationStub: Validation = {
-    validate: (loginRequestReceived: any) => {
-      Object.keys(loginRequest).forEach(
-        (key: string) =>
-          (loginRequest[key as keyof AuthenticationParams] =
-            loginRequestReceived[key as keyof AuthenticationParams])
-      );
-      return { ok: true, message: '' };
-    },
-  };
+  const validationStub = new AuthenticationValidation();
 
   const authentication: Authentication = {
     auth: async (authenticationParamsReceived: AuthenticationParams) => {
       Object.keys(authenticationParams).forEach(
         (key: string) =>
           (authenticationParams[key as keyof AuthenticationParams] =
-            authenticationParamsReceived[key as keyof AuthenticationParams])
+            authenticationParamsReceived[key as keyof AuthenticationParams]),
       );
       return authenticationReturn;
     },
@@ -58,12 +61,12 @@ const makeSut = () => {
   };
 };
 
-const mockRequest = (): LoginRequest => ({
+const mockRequest = (): AuthenticationParams => ({
   username: faker.person.firstName(),
   password: faker.internet.password(),
 });
 
-test('should call Validation method with correct values', async (t) => {
+test("should call Validation method with correct values", async (t) => {
   const { sut, loginRequest } = makeSut();
   const loginRequestSend = mockRequest();
 
@@ -71,16 +74,16 @@ test('should call Validation method with correct values', async (t) => {
 
   Object.keys(loginRequestSend).map((key) => {
     t.equal(
-      loginRequest[key as keyof LoginRequest],
-      loginRequestSend[key as keyof LoginRequest]
+      loginRequest[key as keyof AuthenticationParams],
+      loginRequestSend[key as keyof AuthenticationParams],
     );
   });
 });
 
-test('should return 500 if Validation throw', async (t) => {
+test("should return 500 if Validation throw", async (t) => {
   const { sut, validationStub } = makeSut();
 
-  const errorMessage = 'Validation throw error';
+  const errorMessage = "Validation throw error";
 
   validationStub.validate = () => {
     throw new Error(errorMessage);
@@ -91,12 +94,12 @@ test('should return 500 if Validation throw', async (t) => {
   t.match(result, serverError(new Error(errorMessage)));
 });
 
-test('should return 400 if Validation return a error', async (t) => {
+test("should return 400 if Validation return a error", async (t) => {
   const { sut, validationStub } = makeSut();
 
-  const errorToReturn = { ok: false, message: 'Username invalid' };
+  const errorToReturn = { ok: false, message: "Username invalid" };
 
-  validationStub.validate = () => {
+  validationStub.validate = async () => {
     return errorToReturn;
   };
 
@@ -105,7 +108,7 @@ test('should return 400 if Validation return a error', async (t) => {
   t.same(response, badRequest({ ...errorToReturn }));
 });
 
-test('should call Authentication with correct values', async (t) => {
+test("should call Authentication with correct values", async (t) => {
   const { sut, authenticationParams } = makeSut();
   const request = mockRequest();
 
@@ -113,16 +116,16 @@ test('should call Authentication with correct values', async (t) => {
 
   Object.keys(request).map((key) => {
     t.equal(
-      authenticationParams[key as keyof LoginRequest],
-      request[key as keyof LoginRequest]
+      authenticationParams[key as keyof AuthenticationParams],
+      request[key as keyof AuthenticationParams],
     );
   });
 });
 
-test('should return 500 if Authentication throw', async (t) => {
+test("should return 500 if Authentication throw", async (t) => {
   const { sut, authentication } = makeSut();
 
-  const errorMessage = 'Authentication is failed';
+  const errorMessage = "Authentication is failed";
 
   authentication.auth = () => {
     throw new Error(errorMessage);
@@ -133,7 +136,7 @@ test('should return 500 if Authentication throw', async (t) => {
   t.match(result, serverError(new Error(errorMessage)));
 });
 
-test('should return 200 if Authentication success', async (t) => {
+test("should return 200 if Authentication success", async (t) => {
   const { sut, authenticationReturn } = makeSut();
   const request = mockRequest();
   const result = await sut.handle(request);
