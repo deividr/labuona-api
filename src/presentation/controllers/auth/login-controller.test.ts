@@ -1,5 +1,5 @@
-import LoginController from "../../../../src/presentation/controllers/auth/login-controller";
-import { serverError, badRequest } from "../../../../src/presentation/helpers";
+import LoginController from "./login-controller";
+import { serverError, badRequest } from "../../helpers";
 
 import { test } from "tap";
 import { faker } from "@faker-js/faker";
