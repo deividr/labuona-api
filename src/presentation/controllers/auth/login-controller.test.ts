@@ -49,7 +49,7 @@ const makeSut = () => {
     },
   };
 
-  const sut = LoginController(validationStub, authentication);
+  const sut = new LoginController(validationStub, authentication);
 
   return {
     sut,

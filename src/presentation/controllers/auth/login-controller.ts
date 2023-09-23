@@ -6,29 +6,29 @@ import {
 } from "@usecases/authentication";
 import { badRequest, ok, serverError } from "../../helpers";
 
-function LoginController(
-  validation: Validation<AuthenticationParams>,
-  authentication: Authentication,
-): Controller<AuthenticationParams, AuthenticationReturn> {
-  const handle = async (body: AuthenticationParams) => {
+class LoginController
+  implements Controller<AuthenticationParams, AuthenticationReturn>
+{
+  constructor(
+    private readonly validation: Validation<AuthenticationParams>,
+    private readonly authentication: Authentication,
+  ) {}
+
+  async handle(body: AuthenticationParams) {
     try {
-      const validationResult = await validation.validate(body);
+      const validationResult = await this.validation.validate(body);
 
       if (!validationResult.ok) {
         return badRequest(validationResult);
       }
 
-      const response = await authentication.auth(body);
+      const response = await this.authentication.auth(body);
 
       return ok(response);
     } catch (error: any) {
       return serverError(error);
     }
-  };
-
-  return {
-    handle,
-  };
+  }
 }
 
 export default LoginController;
