@@ -12,7 +12,7 @@ class LoginValidation implements Validation<AuthenticationParams> {
     const result = AuthenticationParamsSchema.safeParse(values);
 
     if (result.success) {
-      return { success: true, message: "Tudo certo meu caro" };
+      return { success: true, message: "ok" };
     }
 
     return { success: false, message: result.error.errors[0].message };

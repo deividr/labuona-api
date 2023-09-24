@@ -8,8 +8,17 @@ const makeSut = () => {
   };
 };
 
-test("should return ok false if lenght username less then three(3)", async (t) => {
+test("should return false if length username less then three(3)", async (t) => {
   const { sut } = makeSut();
   const result = await sut.validate({ username: "1234", password: "teste" });
   t.equal(result.success, false);
+});
+
+test("should return success if params is ok", async (t) => {
+  const { sut } = makeSut();
+  const result = await sut.validate({
+    username: "username",
+    password: "password",
+  });
+  t.equal(result.success, true);
 });
