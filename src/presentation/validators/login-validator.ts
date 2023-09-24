@@ -3,14 +3,19 @@ import { Validation } from "../protocols/validation";
 import { z } from "zod";
 
 const AuthenticationParamsSchema = z.object({
-  username: z.string(),
+  username: z.string().min(5),
   password: z.string(),
 });
 
 class LoginValidation implements Validation<AuthenticationParams> {
   async validate(values: AuthenticationParams) {
-    AuthenticationParamsSchema.parse(values);
-    return { ok: true, message: "Tudo certo meu caro" };
+    const result = AuthenticationParamsSchema.safeParse(values);
+
+    if (result.success) {
+      return { success: true, message: "Tudo certo meu caro" };
+    }
+
+    return { success: false, message: result.error.errors[0].message };
   }
 }
 

@@ -27,7 +27,7 @@ class AuthenticationValidation implements Validation<AuthenticationParams> {
         (loginRequest[key as keyof AuthenticationParams] =
           loginRequestReceived[key as keyof AuthenticationParams]),
     );
-    return { ok: true, message: "" };
+    return { success: true, message: "" };
   }
 }
 
@@ -97,7 +97,7 @@ test("should return 500 if Validation throw", async (t) => {
 test("should return 400 if Validation return a error", async (t) => {
   const { sut, validationStub } = makeSut();
 
-  const errorToReturn = { ok: false, message: "Username invalid" };
+  const errorToReturn = { success: false, message: "Username invalid" };
 
   validationStub.validate = async () => {
     return errorToReturn;

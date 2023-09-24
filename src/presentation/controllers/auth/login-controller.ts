@@ -18,7 +18,7 @@ class LoginController
     try {
       const validationResult = await this.validation.validate(body);
 
-      if (!validationResult.ok) {
+      if (!validationResult.success) {
         return badRequest(validationResult);
       }
 
