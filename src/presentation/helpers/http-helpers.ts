@@ -1,4 +1,4 @@
-import { HttpResponse } from '../protocols/http-response';
+import { HttpResponse } from "../protocols/http-response";
 
 export const ok = (body?: any): HttpResponse<any> => {
   return {
@@ -9,7 +9,7 @@ export const ok = (body?: any): HttpResponse<any> => {
 
 // export const noContent = (): HttpResponse<any> => {
 //   return {
-//     statusCode: 200,
+//     statusCode: 204,
 //   };
 // };
 

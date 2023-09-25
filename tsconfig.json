@@ -7,6 +7,8 @@
     "paths": {
       "@controllers/*": ["./src/presentation/controllers/*"],
       "@usecases/*": ["./src/domain/usecases/*"],
+      "@models/*": ["./src/domain/models/*"],
+      "@repositories/*": ["./src/data/protocols/db/*"],
       "@validations/*": ["src/presentation/validators/*"],
       "@presentation/protocols": ["./src/presentation/protocols"]
     }
