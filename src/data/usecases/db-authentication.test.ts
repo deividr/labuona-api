@@ -6,6 +6,7 @@ import { faker } from "@faker-js/faker";
 import { test } from "tap";
 import { User } from "@models/user";
 import { DbAuthentication } from "./db-authentication";
+import { Encrypter } from "../protocols/crypto/encrypter";
 
 class LoadUserByUsernameAndPasswordRepositorySpy
   implements LoadUserByUsernameAndPasswordRepository
@@ -28,6 +29,15 @@ class LoadUserByUsernameAndPasswordRepositorySpy
   }
 }
 
+class EncrypterSpy implements Encrypter {
+  value: string = "";
+  hashedValue = faker.string.uuid();
+  async encrypt(value: string) {
+    this.value = value;
+    return this.hashedValue;
+  }
+}
+
 const mockDbAuthenticationParams = () => ({
   username: faker.internet.userName(),
   password: faker.internet.password(),
@@ -37,9 +47,14 @@ const makeSut = () => {
   const loadUserByUsernameAndPasswordRepositorySpy =
     new LoadUserByUsernameAndPasswordRepositorySpy();
 
-  const sut = new DbAuthentication(loadUserByUsernameAndPasswordRepositorySpy);
+  const encrypterSpy = new EncrypterSpy();
 
-  return { sut, loadUserByUsernameAndPasswordRepositorySpy };
+  const sut = new DbAuthentication(
+    loadUserByUsernameAndPasswordRepositorySpy,
+    encrypterSpy,
+  );
+
+  return { sut, loadUserByUsernameAndPasswordRepositorySpy, encrypterSpy };
 };
 
 test("Db Authentication", async () => {
@@ -55,5 +70,12 @@ test("Db Authentication", async () => {
         ],
       );
     });
+  });
+
+  test("should call Encrypt function with corret values", async (t) => {
+    const { sut, encrypterSpy } = makeSut();
+    const params = mockDbAuthenticationParams();
+    await sut.auth(params);
+    t.equal(params.password, encrypterSpy.value);
   });
 });

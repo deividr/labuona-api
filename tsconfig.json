@@ -10,7 +10,8 @@
       "@models/*": ["./src/domain/models/*"],
       "@repositories/*": ["./src/data/protocols/db/*"],
       "@validations/*": ["src/presentation/validators/*"],
-      "@presentation/protocols": ["./src/presentation/protocols"]
+      "@presentation/protocols": ["./src/presentation/protocols"],
+      "@data/protocols": ["./src/data/protocols"]
     }
   },
   "include": ["src/**/*.ts"]
