@@ -58,24 +58,25 @@ const makeSut = () => {
 };
 
 test("Db Authentication", async () => {
-  test("should call LoadUserRepository with correct values", async (t) => {
-    const { sut, loadUserByUsernameAndPasswordRepositorySpy } = makeSut();
-    const params = mockDbAuthenticationParams();
-    await sut.auth(params);
-    Object.keys(params).forEach((key) => {
-      t.equal(
-        params[key as keyof LoadUserByUsernameAndPasswordRepositoryParams],
-        loadUserByUsernameAndPasswordRepositorySpy.params![
-          key as keyof LoadUserByUsernameAndPasswordRepositoryParams
-        ],
-      );
-    });
-  });
-
   test("should call Encrypt function with corret values", async (t) => {
     const { sut, encrypterSpy } = makeSut();
     const params = mockDbAuthenticationParams();
     await sut.auth(params);
     t.equal(params.password, encrypterSpy.value);
+  });
+
+  test("should call LoadUserRepository with correct values", async (t) => {
+    const { sut, loadUserByUsernameAndPasswordRepositorySpy, encrypterSpy } =
+      makeSut();
+    const params = mockDbAuthenticationParams();
+    await sut.auth(params);
+    t.equal(
+      params.username,
+      loadUserByUsernameAndPasswordRepositorySpy.params?.username,
+    );
+    t.equal(
+      encrypterSpy.hashedValue,
+      loadUserByUsernameAndPasswordRepositorySpy.params?.password,
+    );
   });
 });

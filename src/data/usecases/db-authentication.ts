@@ -9,8 +9,11 @@ export class DbAuthentication implements Authentication {
   ) {}
 
   async auth(params: AuthenticationParams) {
-    this.encrypter.encrypt(params.password);
-    this.loadUserByUsernameAndPasswordRepository.load({ ...params });
+    const hashedPassword = await this.encrypter.encrypt(params.password);
+    this.loadUserByUsernameAndPasswordRepository.load({
+      ...params,
+      password: hashedPassword,
+    });
     return { token: "teste" };
   }
 }
