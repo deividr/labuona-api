@@ -1,10 +1,10 @@
 import { Controller, Validation } from "@presentation/protocols";
+import { badRequest, ok, serverError } from "../../helpers";
 import {
   Authentication,
   AuthenticationParams,
   AuthenticationReturn,
-} from "@usecases/authentication";
-import { badRequest, ok, serverError } from "../../helpers";
+} from "@domain/usecases";
 
 class LoginController
   implements Controller<AuthenticationParams, AuthenticationReturn>

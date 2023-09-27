@@ -1,6 +1,9 @@
-import { LoadUserByUsernameAndPasswordRepository } from "@repositories/load-user-repository";
-import { Authentication, AuthenticationParams } from "@usecases/authentication";
-import { Encrypter } from "@data/protocols";
+import {
+  Encrypter,
+  LoadUserByUsernameAndPasswordRepository,
+} from "@data/protocols";
+import { Authentication, AuthenticationParams } from "@domain/usecases";
+import { Unauthourized } from "../../presentation/errors";
 
 export class DbAuthentication implements Authentication {
   constructor(
@@ -10,10 +13,16 @@ export class DbAuthentication implements Authentication {
 
   async auth(params: AuthenticationParams) {
     const hashedPassword = await this.encrypter.encrypt(params.password);
-    this.loadUserByUsernameAndPasswordRepository.load({
+    const userFound = await this.loadUserByUsernameAndPasswordRepository.load({
       ...params,
       password: hashedPassword,
     });
+
+    if (!userFound) {
+      console.log("vai trollar");
+      throw new Unauthourized();
+    }
+
     return { token: "teste" };
   }
 }

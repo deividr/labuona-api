@@ -1,4 +1,4 @@
-import { AuthenticationParams } from "@usecases/authentication";
+import { AuthenticationParams } from "@domain/usecases";
 import { Validation } from "../protocols/validation";
 import { z } from "zod";
 

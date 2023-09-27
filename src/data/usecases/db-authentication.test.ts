@@ -1,12 +1,13 @@
+import { faker } from "@faker-js/faker";
+import { test } from "tap";
 import {
   LoadUserByUsernameAndPasswordRepository,
   LoadUserByUsernameAndPasswordRepositoryParams,
-} from "@repositories/load-user-repository";
-import { faker } from "@faker-js/faker";
-import { test } from "tap";
-import { User } from "@models/user";
+  Encrypter,
+} from "@data/protocols";
+import { User } from "@domain/models";
 import { DbAuthentication } from "./db-authentication";
-import { Encrypter } from "../protocols/crypto/encrypter";
+import { Unauthourized } from "../../presentation/errors";
 
 class LoadUserByUsernameAndPasswordRepositorySpy
   implements LoadUserByUsernameAndPasswordRepository
@@ -78,5 +79,14 @@ test("Db Authentication", async () => {
       encrypterSpy.hashedValue,
       loadUserByUsernameAndPasswordRepositorySpy.params?.password,
     );
+  });
+
+  test("should throw error if credetials not found", async (t) => {
+    const { sut, loadUserByUsernameAndPasswordRepositorySpy } = makeSut();
+    loadUserByUsernameAndPasswordRepositorySpy.load = async () => {
+      return null as unknown as User;
+    };
+    const params = mockDbAuthenticationParams();
+    t.rejects(sut.auth(params), new Unauthourized());
   });
 });

@@ -1,4 +1,4 @@
-import type { User } from "@models/user";
+import { User } from "@domain/models";
 
 export type LoadUserByUsernameAndPasswordRepositoryParams = {
   username: string;
@@ -8,5 +8,5 @@ export type LoadUserByUsernameAndPasswordRepositoryParams = {
 export interface LoadUserByUsernameAndPasswordRepository {
   load: (
     params: LoadUserByUsernameAndPasswordRepositoryParams,
-  ) => Promise<User>;
+  ) => Promise<User | void>;
 }

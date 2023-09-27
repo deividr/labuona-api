@@ -6,12 +6,13 @@
     "baseUrl": ".",
     "paths": {
       "@controllers/*": ["./src/presentation/controllers/*"],
-      "@usecases/*": ["./src/domain/usecases/*"],
-      "@models/*": ["./src/domain/models/*"],
-      "@repositories/*": ["./src/data/protocols/db/*"],
+      "@domain/models": ["./src/domain/models"],
+      "@domain/usecases": ["./src/domain/usecases"],
       "@validations/*": ["src/presentation/validators/*"],
       "@presentation/protocols": ["./src/presentation/protocols"],
-      "@data/protocols": ["./src/data/protocols"]
+      "@presentation/errors": ["./src/presentation/errors"],
+      "@data/protocols": ["./src/data/protocols"],
+      "@data/usecases": ["./src/data/usecases"]
     }
   },
   "include": ["src/**/*.ts"]

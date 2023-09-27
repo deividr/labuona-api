@@ -8,7 +8,7 @@ import {
   Authentication,
   AuthenticationParams,
   AuthenticationReturn,
-} from "@usecases/authentication";
+} from "@domain/usecases";
 
 const loginRequest: AuthenticationParams = {
   username: "",
