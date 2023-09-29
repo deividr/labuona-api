@@ -19,7 +19,6 @@ export class DbAuthentication implements Authentication {
     });
 
     if (!userFound) {
-      console.log("vai trollar");
       throw new Unauthourized();
     }
 

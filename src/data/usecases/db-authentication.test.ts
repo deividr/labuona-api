@@ -81,7 +81,7 @@ test("Db Authentication", async () => {
     );
   });
 
-  test("should throw error if credetials not found", async (t) => {
+  test("should throw error if credentials not found", async (t) => {
     const { sut, loadUserByUsernameAndPasswordRepositorySpy } = makeSut();
     loadUserByUsernameAndPasswordRepositorySpy.load = async () => {
       return null as unknown as User;
