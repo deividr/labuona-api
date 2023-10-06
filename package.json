@@ -24,6 +24,7 @@
     "fastify": "^4.0.0",
     "fastify-cli": "^5.7.1",
     "fastify-plugin": "^4.0.0",
+    "kysely": "^0.26.3",
     "pg": "^8.11.3",
     "zod": "^3.22.2"
   },
