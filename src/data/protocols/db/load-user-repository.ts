@@ -8,5 +8,5 @@ export type LoadUserByUsernameAndPasswordRepositoryParams = {
 export interface LoadUserByUsernameAndPasswordRepository {
   load: (
     params: LoadUserByUsernameAndPasswordRepositoryParams,
-  ) => Promise<User | void>;
+  ) => Promise<User | null>;
 }

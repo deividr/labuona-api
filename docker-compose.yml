@@ -1,19 +1,19 @@
 version: "3.9"
 
 services:
-  api:
-    build:
-      context: .
-      target: dev
-    volumes:
-      - ./:/app
+  # api:
+  #   build:
+  #     context: .
+  #     target: dev
+  #   volumes:
+  #     - ./:/app
 
-  api-test:
-    build:
-      context: .
-      target: test
-    volumes:
-      - ./:/app
+  # api-test:
+  #   build:
+  #     context: .
+  #     target: test
+  #   volumes:
+  #     - ./:/app
 
   postgres:
     image: postgres:14-alpine
@@ -22,6 +22,6 @@ services:
     volumes:
       - ./data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=labuona
-      - POSTGRES_USER=labuona
-      - POSTGRES_PASSWORD=labuona
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: labuonapasta
+      POSTGRES_USER: postgres

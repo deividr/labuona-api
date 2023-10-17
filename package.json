@@ -26,15 +26,18 @@
     "fastify-plugin": "^4.0.0",
     "kysely": "^0.26.3",
     "pg": "^8.11.3",
+    "tsx": "^3.13.0",
     "zod": "^3.22.2"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.0.2",
     "@types/node": "^18.0.0",
+    "@types/pg": "^8.10.3",
     "@types/tap": "^15.0.5",
     "@typescript-eslint/eslint-plugin": "^6.7.0",
     "@typescript-eslint/parser": "^6.7.0",
     "concurrently": "^7.0.0",
+    "dotenv": "^16.3.1",
     "eslint": "^8.49.0",
     "eslint-config-prettier": "9.0.0",
     "fastify-tsconfig": "^1.0.1",

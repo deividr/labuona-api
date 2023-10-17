@@ -15,6 +15,7 @@ class LoadUserByUsernameAndPasswordRepositorySpy
   params: LoadUserByUsernameAndPasswordRepositoryParams | null = null;
 
   user: User = {
+    name: faker.person.fullName(),
     username: faker.internet.userName(),
     password: faker.internet.password(),
     createdAt: faker.date.past(),
