@@ -1,6 +1,5 @@
 import { test } from "tap";
 import { User } from "./user-postgres-repository";
-import { db } from "./database";
 import { faker } from "@faker-js/faker";
 
 test("should return user if exists", async (t) => {
@@ -11,9 +10,9 @@ test("should return user if exists", async (t) => {
     isDeleted: false,
   };
 
-  await db.insertInto("users").values(newUser).executeTakeFirst();
-
   const user = new User();
+
+  await user.insert(newUser);
 
   const foundUser = await user.load({
     username: newUser.username,

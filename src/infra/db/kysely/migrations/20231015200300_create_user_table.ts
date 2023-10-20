@@ -1,9 +1,13 @@
 import { Kysely, sql } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
+  await sql`CREATE EXTENSION "uuid-ossp"`.execute(db);
+
   await db.schema
     .createTable("users")
-    .addColumn("id", "uuid", (col) => col.primaryKey())
+    .addColumn("id", "uuid", (col) =>
+      col.primaryKey().defaultTo(sql`uuid_generate_v4()`),
+    )
     .addColumn("name", "varchar(30)", (col) => col.notNull())
     .addColumn("username", "varchar(20)", (col) => col.notNull())
     .addColumn("password", "varchar(200)", (col) => col.notNull())
