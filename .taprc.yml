@@ -1,5 +1,4 @@
 before: ./test/before.ts
-after: ./test/after.ts
 
 test-env:
   - DB_NAME=labuonapasta_test
@@ -7,3 +6,4 @@ test-env:
   - DB_USER=postgres
   - DB_PASSWORD=
   - DB_PORT=5432
+  - SALT=saltTest
