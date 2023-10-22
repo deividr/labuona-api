@@ -1,4 +1,5 @@
 before: ./test/before.ts
+after: ./test/after.ts
 
 test-env:
   - DB_NAME=labuonapasta_test

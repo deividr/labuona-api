@@ -22,3 +22,14 @@ test("should return user if exists", async (t) => {
   t.equal(foundUser?.name, newUser.name);
   t.equal(foundUser?.password, newUser.password);
 });
+
+test("should return null if does not exists", async (t) => {
+  const user = new User();
+
+  const foundUser = await user.load({
+    username: faker.internet.userName(),
+    password: faker.internet.password(),
+  });
+
+  t.equal(foundUser, null);
+});
