@@ -3,7 +3,7 @@ import { test } from "tap";
 import {
   LoadUserByUsernameAndPasswordRepository,
   LoadUserByUsernameAndPasswordRepositoryParams,
-  Encrypter,
+  Hasher,
 } from "@data/protocols";
 import { User } from "@domain/models";
 import { DbAuthentication } from "./db-authentication";
@@ -31,10 +31,10 @@ class LoadUserByUsernameAndPasswordRepositorySpy
   }
 }
 
-class EncrypterSpy implements Encrypter {
+class HasherSpy implements Hasher {
   value: string = "";
   hashedValue = faker.string.uuid();
-  async encrypt(value: string) {
+  async hash(value: string) {
     this.value = value;
     return this.hashedValue;
   }
@@ -49,26 +49,26 @@ const makeSut = () => {
   const loadUserByUsernameAndPasswordRepositorySpy =
     new LoadUserByUsernameAndPasswordRepositorySpy();
 
-  const encrypterSpy = new EncrypterSpy();
+  const hasherSpy = new HasherSpy();
 
   const sut = new DbAuthentication(
     loadUserByUsernameAndPasswordRepositorySpy,
-    encrypterSpy,
+    hasherSpy,
   );
 
-  return { sut, loadUserByUsernameAndPasswordRepositorySpy, encrypterSpy };
+  return { sut, loadUserByUsernameAndPasswordRepositorySpy, hasherSpy };
 };
 
 test("Db Authentication", async () => {
   test("should call Encrypt function with corret values", async (t) => {
-    const { sut, encrypterSpy } = makeSut();
+    const { sut, hasherSpy } = makeSut();
     const params = mockDbAuthenticationParams();
     await sut.auth(params);
-    t.equal(params.password, encrypterSpy.value);
+    t.equal(params.password, hasherSpy.value);
   });
 
   test("should call LoadUserRepository with correct values", async (t) => {
-    const { sut, loadUserByUsernameAndPasswordRepositorySpy, encrypterSpy } =
+    const { sut, loadUserByUsernameAndPasswordRepositorySpy, hasherSpy } =
       makeSut();
     const params = mockDbAuthenticationParams();
     await sut.auth(params);
@@ -77,7 +77,7 @@ test("Db Authentication", async () => {
       loadUserByUsernameAndPasswordRepositorySpy.params?.username,
     );
     t.equal(
-      encrypterSpy.hashedValue,
+      hasherSpy.hashedValue,
       loadUserByUsernameAndPasswordRepositorySpy.params?.password,
     );
   });

@@ -1,8 +1,8 @@
-import { Encrypter } from "@data/protocols";
+import { Hasher } from "@data/protocols";
 import { pbkdf2Sync } from "crypto";
 
-export class NodeCrypto implements Encrypter {
-  async encrypt(value: string): Promise<string> {
+export class NodeCrypto implements Hasher {
+  async hash(value: string): Promise<string> {
     return pbkdf2Sync(
       value,
       process.env.SALT ?? "",
