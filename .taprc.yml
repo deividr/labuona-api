@@ -1,9 +1,0 @@
-before: ./test/before.ts
-
-test-env:
-  - DB_NAME=labuonapasta_test
-  - DB_HOST=localhost
-  - DB_USER=postgres
-  - DB_PASSWORD=
-  - DB_PORT=5432
-  - SALT=saltTest
