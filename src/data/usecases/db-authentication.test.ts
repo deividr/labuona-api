@@ -4,6 +4,7 @@ import {
   LoadUserByUsernameAndPasswordRepository,
   LoadUserByUsernameAndPasswordRepositoryParams,
   Hasher,
+  Encrypter,
 } from "@data/protocols";
 import { User } from "@domain/models";
 import { DbAuthentication } from "./db-authentication";
@@ -15,6 +16,7 @@ class LoadUserByUsernameAndPasswordRepositorySpy
   params: LoadUserByUsernameAndPasswordRepositoryParams | null = null;
 
   user: User = {
+    id: faker.string.uuid(),
     name: faker.person.fullName(),
     username: faker.internet.userName(),
     password: faker.internet.password(),
@@ -40,6 +42,16 @@ class HasherSpy implements Hasher {
   }
 }
 
+type TEncrypter = { id: string; username: string };
+class EncrypterSpy implements Encrypter<TEncrypter> {
+  payload: TEncrypter | null = null;
+
+  async encrypt(payload: TEncrypter): Promise<string> {
+    this.payload = payload;
+    return "";
+  }
+}
+
 const mockDbAuthenticationParams = () => ({
   username: faker.internet.userName(),
   password: faker.internet.password(),
@@ -50,17 +62,24 @@ const makeSut = () => {
     new LoadUserByUsernameAndPasswordRepositorySpy();
 
   const hasherSpy = new HasherSpy();
+  const encrypterSpy = new EncrypterSpy();
 
   const sut = new DbAuthentication(
     loadUserByUsernameAndPasswordRepositorySpy,
     hasherSpy,
+    encrypterSpy,
   );
 
-  return { sut, loadUserByUsernameAndPasswordRepositorySpy, hasherSpy };
+  return {
+    sut,
+    loadUserByUsernameAndPasswordRepositorySpy,
+    hasherSpy,
+    encrypterSpy,
+  };
 };
 
 test("Db Authentication", async () => {
-  test("should call Encrypt function with corret values", async (t) => {
+  test("should call Hasher function with corret values", async (t) => {
     const { sut, hasherSpy } = makeSut();
     const params = mockDbAuthenticationParams();
     await sut.auth(params);
@@ -89,5 +108,20 @@ test("Db Authentication", async () => {
     };
     const params = mockDbAuthenticationParams();
     t.rejects(sut.auth(params), new Unauthourized());
+  });
+
+  test("should call Encrypt function with correct value", async (t) => {
+    const { sut, encrypterSpy, loadUserByUsernameAndPasswordRepositorySpy } =
+      makeSut();
+    const params = mockDbAuthenticationParams();
+    await sut.auth(params);
+    t.equal(
+      encrypterSpy.payload?.id,
+      loadUserByUsernameAndPasswordRepositorySpy.user.id,
+    );
+    t.equal(
+      encrypterSpy.payload?.username,
+      loadUserByUsernameAndPasswordRepositorySpy.user.username,
+    );
   });
 });

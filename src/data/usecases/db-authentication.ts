@@ -1,5 +1,5 @@
 import {
-  // Encrypter,
+  Encrypter,
   Hasher,
   LoadUserByUsernameAndPasswordRepository,
 } from "@data/protocols";
@@ -9,7 +9,8 @@ import { Unauthourized } from "../../presentation/errors";
 export class DbAuthentication implements Authentication {
   constructor(
     private readonly loadUserByUsernameAndPasswordRepository: LoadUserByUsernameAndPasswordRepository,
-    private readonly hasher: Hasher, // private readonly encrypter: Encrypter,
+    private readonly hasher: Hasher,
+    private readonly encrypter: Encrypter<{ id: string; username: string }>,
   ) {}
 
   async auth(params: AuthenticationParams) {
@@ -22,6 +23,11 @@ export class DbAuthentication implements Authentication {
     if (!userFound) {
       throw new Unauthourized();
     }
+
+    await this.encrypter.encrypt({
+      id: userFound.id,
+      username: userFound.username,
+    });
 
     return { token: "teste" };
   }
