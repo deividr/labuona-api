@@ -124,4 +124,14 @@ test("Db Authentication", async () => {
       loadUserByUsernameAndPasswordRepositorySpy.user.username,
     );
   });
+
+  test("should throw error if encrypter throw error", async (t) => {
+    const { sut, encrypterSpy } = makeSut();
+    const error = new Error("Encrypter error");
+    encrypterSpy.encrypt = async () => {
+      throw error;
+    };
+    const params = mockDbAuthenticationParams();
+    t.rejects(sut.auth(params), error);
+  });
 });
