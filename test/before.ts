@@ -1,5 +1,6 @@
 import { Client } from "pg";
 import { migrateToLatest } from "../src/infra/db/kysely";
+import { db } from "../src/infra/db/postgres/database";
 
 const createTestDatabase = async () => {
   const client = new Client({
@@ -21,6 +22,7 @@ const createTestDatabase = async () => {
 async function initialDBConfig() {
   await createTestDatabase();
   await migrateToLatest();
+  await db.destroy();
 }
 
 initialDBConfig();
