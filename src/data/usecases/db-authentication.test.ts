@@ -127,11 +127,10 @@ test("Db Authentication", async () => {
 
   test("should throw error if encrypter throw error", async (t) => {
     const { sut, encrypterSpy } = makeSut();
-    const error = new Error("Encrypter error");
     encrypterSpy.encrypt = async () => {
-      throw error;
+      throw Error("Encrypter error");
     };
     const params = mockDbAuthenticationParams();
-    t.rejects(sut.auth(params), error);
+    t.rejects(sut.auth(params));
   });
 });
