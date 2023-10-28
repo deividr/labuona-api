@@ -45,10 +45,12 @@ class HasherSpy implements Hasher {
 type TEncrypter = { id: string; username: string };
 class EncrypterSpy implements Encrypter<TEncrypter> {
   payload: TEncrypter | null = null;
+  result: string = "";
 
   async encrypt(payload: TEncrypter): Promise<string> {
     this.payload = payload;
-    return "";
+    this.result = JSON.stringify(this.payload);
+    return this.result;
   }
 }
 
@@ -132,5 +134,12 @@ test("Db Authentication", async () => {
     };
     const params = mockDbAuthenticationParams();
     t.rejects(sut.auth(params));
+  });
+
+  test("should return token if all things ok", async (t) => {
+    const { sut, encrypterSpy } = makeSut();
+    const params = mockDbAuthenticationParams();
+    const result = await sut.auth(params);
+    t.equal(result.token, encrypterSpy.result);
   });
 });

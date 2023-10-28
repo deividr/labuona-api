@@ -24,11 +24,11 @@ export class DbAuthentication implements Authentication {
       throw new Unauthourized();
     }
 
-    await this.encrypter.encrypt({
+    const result = await this.encrypter.encrypt({
       id: userFound.id,
       username: userFound.username,
     });
 
-    return { token: "teste" };
+    return { token: result };
   }
 }
