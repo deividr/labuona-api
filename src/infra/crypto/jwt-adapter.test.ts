@@ -24,4 +24,17 @@ test("Jwt Encrypter Adapter", async (t) => {
     t.has(result.id, payload.id);
     t.has(result.username, payload.username);
   });
+
+  t.test("should throw error if token is invalid", async () => {
+    const sut = new JwtAdapter("wrongSalt");
+    const sutCorrect = new JwtAdapter();
+
+    const payload = {
+      id: faker.string.uuid(),
+      username: faker.internet.userName(),
+    };
+
+    const token = await sut.encrypt(payload);
+    t.rejects(sutCorrect.decrypter(token));
+  });
 });
