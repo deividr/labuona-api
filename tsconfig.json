@@ -5,7 +5,7 @@
     "sourceMap": true,
     "baseUrl": ".",
     "paths": {
-      "@controllers/*": ["./src/presentation/controllers/*"],
+      // "@controllers/*": ["./src/presentation/controllers/*"],
       "@domain/models": ["./src/domain/models"],
       "@domain/usecases": ["./src/domain/usecases"],
       "@validations/*": ["src/presentation/validators/*"],
