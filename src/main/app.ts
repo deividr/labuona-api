@@ -1,6 +1,8 @@
 import { join } from "node:path";
 import AutoLoad, { AutoloadPluginOptions } from "@fastify/autoload";
 import { FastifyPluginAsync } from "fastify";
+import helmet from "@fastify/helmet";
+import cors from "@fastify/cors";
 
 export type AppOptions = {
   // Place your custom options for app below here.
@@ -14,6 +16,11 @@ const app: FastifyPluginAsync<AppOptions> = async (
   opts,
 ): Promise<void> => {
   // Place here your custom code!
+  void fastify.register(helmet, {
+    contentSecurityPolicy: false,
+  });
+
+  void fastify.register(cors);
 
   // Do not touch the following lines
 
