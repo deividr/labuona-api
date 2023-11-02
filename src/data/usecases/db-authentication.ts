@@ -4,7 +4,6 @@ import {
   LoadUserByUsernameAndPasswordRepository,
 } from "@data/protocols";
 import { Authentication, AuthenticationParams } from "@domain/usecases";
-import { Unauthourized } from "../../presentation/errors";
 
 export class DbAuthentication implements Authentication {
   constructor(
@@ -21,7 +20,7 @@ export class DbAuthentication implements Authentication {
     });
 
     if (!userFound) {
-      throw new Unauthourized();
+      return null;
     }
 
     const result = await this.encrypter.encrypt({

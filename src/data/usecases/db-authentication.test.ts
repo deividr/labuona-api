@@ -103,13 +103,14 @@ test("Db Authentication", async () => {
     );
   });
 
-  test("should throw error if credentials not found", async (t) => {
+  test("should return null if credentials not found", async (t) => {
     const { sut, loadUserByUsernameAndPasswordRepositorySpy } = makeSut();
     loadUserByUsernameAndPasswordRepositorySpy.load = async () => {
       return null as unknown as User;
     };
     const params = mockDbAuthenticationParams();
-    t.rejects(sut.auth(params), new Unauthourized());
+    const response = await sut.auth(params);
+    t.equal(response, null);
   });
 
   test("should call Encrypt function with correct value", async (t) => {
@@ -140,6 +141,6 @@ test("Db Authentication", async () => {
     const { sut, encrypterSpy } = makeSut();
     const params = mockDbAuthenticationParams();
     const result = await sut.auth(params);
-    t.equal(result.token, encrypterSpy.result);
+    t.equal(result?.token, encrypterSpy.result);
   });
 });

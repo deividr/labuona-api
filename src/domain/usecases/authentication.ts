@@ -8,5 +8,5 @@ export type AuthenticationReturn = {
 };
 
 export interface Authentication {
-  auth: (params: AuthenticationParams) => Promise<AuthenticationReturn>;
+  auth: (params: AuthenticationParams) => Promise<AuthenticationReturn | null>;
 }
