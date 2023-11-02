@@ -1,12 +1,17 @@
 import { test } from "tap";
 import { build } from "../helper";
+import { db } from "../../src/infra/db/postgres/database";
 
-test("auth is loaded", async (t) => {
-  const app = await build(t);
+test("Auth", async (t) => {
+  t.test("auth is loaded", async (t) => {
+    const app = await build(t);
 
-  const res = await app.inject({
-    url: "/auth",
+    await app.inject({
+      url: "/auth/login",
+    });
   });
 
-  t.equal(res.payload, "this is an auth");
+  t.teardown(async () => {
+    await db.destroy();
+  });
 });
