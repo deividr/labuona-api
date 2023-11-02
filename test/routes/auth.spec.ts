@@ -50,6 +50,17 @@ test("Auth", async (t) => {
     t.equal(response.statusCode, 401);
   });
 
+  t.test("should return 401 if username is invalid", async (t) => {
+    const { rawPassword } = await mockUser();
+    const app = await build(t);
+
+    const response = await app.inject({
+      url: `/auth/login?username=${faker.internet.userName()}&password=${rawPassword}`,
+    });
+
+    t.equal(response.statusCode, 401);
+  });
+
   t.teardown(async () => {
     await db.destroy();
   });
