@@ -8,7 +8,6 @@ import {
 } from "@data/protocols";
 import { User } from "@domain/models";
 import { DbAuthentication } from "./db-authentication";
-import { Unauthourized } from "../../presentation/errors";
 
 class LoadUserByUsernameAndPasswordRepositorySpy
   implements LoadUserByUsernameAndPasswordRepository

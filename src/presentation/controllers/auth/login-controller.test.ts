@@ -1,5 +1,5 @@
 import LoginController from "./login-controller";
-import { serverError, badRequest } from "../../helpers";
+import { serverError, badRequest, unauthorized } from "../../helpers";
 
 import { test } from "tap";
 import { faker } from "@faker-js/faker";
@@ -120,6 +120,18 @@ test("should call Authentication with correct values", async (t) => {
       request[key as keyof AuthenticationParams],
     );
   });
+});
+
+test("should return 401 if credential are not authorized", async (t) => {
+  const { sut, authentication } = makeSut();
+
+  authentication.auth = async () => {
+    return null;
+  };
+
+  const request = mockRequest();
+  const result = await sut.handle(request);
+  t.match(result, unauthorized());
 });
 
 test("should return 500 if Authentication throw", async (t) => {

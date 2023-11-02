@@ -26,3 +26,9 @@ export const badRequest = (body?: any): HttpResponse<any> => {
     body,
   };
 };
+
+export const unauthorized = (): HttpResponse<any> => {
+  return {
+    statusCode: 401,
+  };
+};

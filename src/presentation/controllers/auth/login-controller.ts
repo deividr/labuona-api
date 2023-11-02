@@ -1,5 +1,5 @@
 import { Controller, Validation } from "@presentation/protocols";
-import { badRequest, ok, serverError } from "../../helpers";
+import { badRequest, ok, serverError, unauthorized } from "../../helpers";
 import {
   Authentication,
   AuthenticationParams,
@@ -24,7 +24,11 @@ class LoginController
 
       const response = await this.authentication.auth(body);
 
-      return ok(response);
+      if (response) {
+        return ok(response);
+      }
+
+      return unauthorized();
     } catch (error: any) {
       return serverError(error);
     }
