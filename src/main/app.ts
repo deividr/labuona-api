@@ -3,6 +3,7 @@ import AutoLoad, { AutoloadPluginOptions } from "@fastify/autoload";
 import { FastifyPluginAsync } from "fastify";
 import helmet from "@fastify/helmet";
 import cors from "@fastify/cors";
+import { migrateToLatest } from "../infra/db/kysely";
 
 export type AppOptions = {
   // Place your custom options for app below here.
@@ -15,6 +16,9 @@ const app: FastifyPluginAsync<AppOptions> = async (
   fastify,
   opts,
 ): Promise<void> => {
+  // Execute migrations when up API
+  await migrateToLatest();
+
   // Place here your custom code!
   void fastify.register(helmet, {
     contentSecurityPolicy: false,

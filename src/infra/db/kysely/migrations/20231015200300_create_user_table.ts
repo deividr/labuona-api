@@ -1,7 +1,7 @@
 import { Kysely, sql } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
-  await sql`CREATE EXTENSION "uuid-ossp"`.execute(db);
+  await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`.execute(db);
 
   await db.schema
     .createTable("users")
