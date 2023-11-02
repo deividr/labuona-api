@@ -27,7 +27,6 @@ const mockUser = async (): Promise<{ user: User; rawPassword: string }> => {
 test("Auth", async (t) => {
   t.test("should return 200 if credentials are valid", async (t) => {
     const { user, rawPassword } = await mockUser();
-
     const app = await build(t);
 
     const response = await app.inject({
@@ -36,6 +35,19 @@ test("Auth", async (t) => {
 
     t.equal(response.statusCode, 200);
     t.hasProp(JSON.parse(response.body), "token");
+  });
+
+  t.test("should return 401 if password is invalid", async (t) => {
+    const { user } = await mockUser();
+    const app = await build(t);
+
+    const response = await app.inject({
+      url: `/auth/login?username=${
+        user.username
+      }&password=${faker.internet.password()}`,
+    });
+
+    t.equal(response.statusCode, 401);
   });
 
   t.teardown(async () => {

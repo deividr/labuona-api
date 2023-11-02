@@ -19,6 +19,7 @@ export class User
       .selectFrom("users")
       .selectAll()
       .where("username", "=", params.username)
+      .where("password", "=", params.password)
       .executeTakeFirst();
 
     return result ?? null;
