@@ -61,6 +61,19 @@ test("Auth", async (t) => {
     t.equal(response.statusCode, 401);
   });
 
+  t.test(
+    "should return 400 if does not provider all informations",
+    async (t) => {
+      const app = await build(t);
+
+      const response = await app.inject({
+        url: `/auth/login?username=${faker.internet.userName()}`,
+      });
+
+      t.equal(response.statusCode, 400);
+    },
+  );
+
   t.teardown(async () => {
     await db.destroy();
   });
