@@ -1,11 +1,18 @@
 import { Controller, Validation } from "@presentation/protocols";
 import { badRequest, serverError } from "../../helpers";
-import { CreateUserParams, CreateUserReturn } from "@domain/usecases";
+import {
+  CreateUser,
+  CreateUserParams,
+  CreateUserReturn,
+} from "@domain/usecases";
 
 export class CreateUserController
   implements Controller<CreateUserParams, CreateUserReturn>
 {
-  constructor(private readonly validation: Validation<CreateUserParams>) {}
+  constructor(
+    private readonly validation: Validation<CreateUserParams>,
+    private readonly createUser: CreateUser,
+  ) {}
 
   async handle(body: CreateUserParams) {
     try {
@@ -14,6 +21,8 @@ export class CreateUserController
       if (!validationResult.success) {
         return badRequest(validationResult);
       }
+
+      await this.createUser.create(body);
 
       return {} as any;
     } catch (error: any) {
