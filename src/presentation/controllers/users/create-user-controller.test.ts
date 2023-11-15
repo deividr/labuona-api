@@ -113,4 +113,18 @@ test("Create User Controller", async (t) => {
       );
     });
   });
+
+  t.test("should return 500 if CreateUser throw", async (t) => {
+    const { sut, createUserSpy } = makeSut();
+
+    const errorMessage = "Validation throw error";
+
+    createUserSpy.create = () => {
+      throw new Error(errorMessage);
+    };
+
+    const result = await sut.handle(mockRequest());
+
+    t.match(result, serverError(new Error(errorMessage)));
+  });
 });
