@@ -7,6 +7,13 @@ export const ok = (body?: any): HttpResponse<any> => {
   };
 };
 
+export const created = (body?: any): HttpResponse<any> => {
+  return {
+    statusCode: 201,
+    body,
+  };
+};
+
 // export const noContent = (): HttpResponse<any> => {
 //   return {
 //     statusCode: 204,

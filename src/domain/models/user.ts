@@ -5,5 +5,7 @@ export type User = {
   password: string;
   isDeleted: boolean;
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt: Date | null;
 };
+
+export type UserSanitize = Omit<User, "password">;

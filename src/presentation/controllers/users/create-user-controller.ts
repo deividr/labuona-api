@@ -1,5 +1,5 @@
 import { Controller, Validation } from "@presentation/protocols";
-import { badRequest, serverError } from "../../helpers";
+import { badRequest, created, serverError } from "../../helpers";
 import {
   CreateUser,
   CreateUserParams,
@@ -22,9 +22,9 @@ export class CreateUserController
         return badRequest(validationResult);
       }
 
-      await this.createUser.create(body);
+      const newUser = await this.createUser.create(body);
 
-      return {} as any;
+      return created(newUser);
     } catch (error: any) {
       return serverError(error);
     }

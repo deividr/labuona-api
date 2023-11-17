@@ -4,6 +4,7 @@ import { Validation } from "@presentation/protocols";
 import { CreateUser, CreateUserParams } from "@domain/usecases";
 import { CreateUserController } from "./create-user-controller";
 import { badRequest, serverError } from "../../helpers";
+import { UserSanitize } from "@domain/models";
 
 class CreateUserValidationSpy implements Validation<CreateUserParams> {
   createUserRequest: CreateUserParams = {
@@ -35,7 +36,16 @@ class CreateUserSpy implements CreateUser {
         (this.params[key as keyof CreateUserParams] =
           createUserRequestReceived[key as keyof CreateUserParams]),
     );
-    return null as any;
+
+    const newUser: UserSanitize = {
+      ...createUserRequestReceived,
+      id: faker.string.uuid(),
+      createdAt: new Date(),
+      updatedAt: null,
+      isDeleted: false,
+    };
+
+    return newUser;
   }
 }
 
@@ -126,5 +136,17 @@ test("Create User Controller", async (t) => {
     const result = await sut.handle(mockRequest());
 
     t.match(result, serverError(new Error(errorMessage)));
+  });
+
+  t.test("should return 201 if CreateUser success", async (t) => {
+    const { sut } = makeSut();
+    const request = mockRequest();
+    const response = await sut.handle(request);
+
+    t.equal(response.statusCode, 201);
+    t.hasOwnProp(response.body, "id");
+    t.hasOwnProp(response.body, "createdAt");
+    t.hasOwnProp(response.body, "updatedAt");
+    t.hasOwnProp(response.body, "isDeleted");
   });
 });
