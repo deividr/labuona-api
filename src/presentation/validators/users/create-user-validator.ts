@@ -1,5 +1,5 @@
 import { CreateUserParams } from "@domain/usecases";
-import { Validation } from "../protocols/validation";
+import { Validation } from "../../protocols/validation";
 import { z } from "zod";
 
 const CreateUserSchema = z.object({
