@@ -1,5 +1,6 @@
 import { test } from "tap";
 import { CreateUserValidation } from "./";
+import { faker } from "@faker-js/faker";
 
 const makeSut = () => {
   const sut = new CreateUserValidation();
@@ -14,9 +15,9 @@ test("Create User Validation", async (t) => {
     async (t) => {
       const { sut } = makeSut();
       const result = await sut.validate({
-        name: "Jose Antonio da Silva",
-        username: "1234",
-        password: "teste",
+        name: faker.person.fullName(),
+        username: "tim",
+        password: faker.internet.password(),
       });
       t.equal(result.success, false);
     },
@@ -25,9 +26,9 @@ test("Create User Validation", async (t) => {
   t.test("should return success if params is ok", async (t) => {
     const { sut } = makeSut();
     const result = await sut.validate({
-      name: "Jose Antonio da Silva",
-      username: "username",
-      password: "password",
+      name: faker.person.fullName(),
+      username: faker.internet.userName(),
+      password: faker.internet.password(),
     });
     t.equal(result.success, true);
   });
