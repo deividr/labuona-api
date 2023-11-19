@@ -1,15 +1,23 @@
-import { Insertable, Kysely } from "kysely";
+import { Kysely } from "kysely";
 
-export class BaseRepository<TInsert extends Insertable<any>> {
+export class BaseRepository<T, TNew> {
   constructor(
     private readonly db: Kysely<any>,
     private readonly tableName: string,
   ) {}
 
-  async insert(insertableValues: TInsert) {
+  async insert(
+    insertableValues: Omit<TNew, "isDeleted" | "createdAt" | "updatedAt">,
+  ): Promise<T> {
     return this.db
       .insertInto(this.tableName)
-      .values(insertableValues)
-      .executeTakeFirst();
+      .values({
+        ...insertableValues,
+        isDeleted: false,
+        createdAt: new Date(),
+        updatedAt: null,
+      })
+      .returningAll()
+      .executeTakeFirst() as T;
   }
 }

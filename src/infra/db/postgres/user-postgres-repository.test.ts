@@ -35,6 +35,20 @@ test("User Postgres Repository Test", async (t) => {
     t.equal(foundUser, null);
   });
 
+  t.test("should return new user when call add function", async (t) => {
+    const user = new User();
+
+    const newUser = await user.add({
+      name: faker.person.fullName(),
+      username: faker.internet.userName(),
+      password: faker.internet.password(),
+    });
+
+    t.hasProp(newUser, "id");
+    t.hasProp(newUser, "createdAt");
+    t.equal(newUser.updatedAt, null);
+  });
+
   t.teardown(async () => {
     await db.destroy();
   });

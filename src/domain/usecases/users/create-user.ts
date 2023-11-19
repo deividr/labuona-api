@@ -1,7 +1,7 @@
 import { User, UserSanitize } from "@domain/models";
 
 export type CreateUserParams = Omit<
-  User,
+  Required<User>,
   "id" | "isDeleted" | "createdAt" | "updatedAt"
 >;
 

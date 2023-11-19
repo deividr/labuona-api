@@ -12,7 +12,7 @@ export interface UserTable {
   username: string;
   password: string;
   createdAt: ColumnType<Date, string | null, never>;
-  updatedAt: ColumnType<Date, never, string | null>;
+  updatedAt: ColumnType<Date, string | null, never>;
   isDeleted: boolean;
 }
 
