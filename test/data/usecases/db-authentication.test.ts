@@ -3,11 +3,11 @@ import { test } from "tap";
 import {
   LoadUserByUsernameAndPasswordRepository,
   LoadUserByUsernameAndPasswordRepositoryParams,
-  Hasher,
   Encrypter,
-} from "@data/protocols";
-import { User } from "@domain/models";
-import { DbAuthentication } from "./db-authentication";
+} from "../../../src/data/protocols";
+import { User } from "../../../src/domain/models";
+import { DbAuthentication } from "../../../src/data/usecases/db-authentication";
+import { HasherSpy } from "./mocks/mock-hasher";
 
 class LoadUserByUsernameAndPasswordRepositorySpy
   implements LoadUserByUsernameAndPasswordRepository
@@ -29,15 +29,6 @@ class LoadUserByUsernameAndPasswordRepositorySpy
     this.user.username = params.username;
     this.user.password = params.password;
     return this.user;
-  }
-}
-
-class HasherSpy implements Hasher {
-  value: string = "";
-  hashedValue = faker.string.uuid();
-  async hash(value: string) {
-    this.value = value;
-    return this.hashedValue;
   }
 }
 
