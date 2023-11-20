@@ -1,2 +1,2 @@
 export * from "./login-validator";
-export * from "./create-user-validator";
+export * from "./users/create-user-validator";
