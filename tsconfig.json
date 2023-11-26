@@ -5,14 +5,14 @@
     "sourceMap": true,
     "baseUrl": ".",
     "paths": {
+      // "@errors": ["src/errors"],
       // "@controllers/*": ["./src/presentation/controllers/*"],
-      "@domain/models": ["./src/domain/models"],
-      "@domain/usecases": ["./src/domain/usecases"],
+      "@domain/models": ["src/domain/models"],
+      "@domain/usecases": ["src/domain/usecases"],
       "@validations/*": ["src/presentation/validators/*"],
-      "@presentation/protocols": ["./src/presentation/protocols"],
-      "@presentation/errors": ["./src/presentation/errors"],
-      "@data/protocols": ["./src/data/protocols"],
-      "@data/usecases": ["./src/data/usecases"]
+      "@presentation/protocols": ["src/presentation/protocols"],
+      "@data/protocols": ["src/data/protocols"],
+      "@data/usecases": ["src/data/usecases"]
     }
   },
   "include": ["src/**/*.ts"]

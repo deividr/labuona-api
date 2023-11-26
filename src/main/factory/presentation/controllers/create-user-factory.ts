@@ -8,7 +8,7 @@ export const makeCreateUserController = () => {
   const validation = new CreateUserValidation();
   const hasher = new NodeCrypto();
   const userRepository = new User();
-  const createUser = new DbCreateUser(hasher, userRepository);
+  const createUser = new DbCreateUser(hasher, userRepository, userRepository);
   const createLoginController = new CreateUserController(
     validation,
     createUser,

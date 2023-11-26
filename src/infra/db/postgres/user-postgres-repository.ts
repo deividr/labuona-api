@@ -7,10 +7,17 @@ import { BaseRepository } from "./base-postgres-repository";
 import { NewUser, User as UserModel } from "../kysely/types/user";
 import { AddUserRepository } from "src/data/protocols/db/add-user-repository";
 import { CreateUserParams } from "@domain/usecases";
+import {
+  LoadUserByUsernameRepository,
+  LoadUserByUsernameRepositoryParams,
+} from "../../../data/protocols/db/load-user-by-username-repository";
 
 export class User
   extends BaseRepository<UserModel, NewUser>
-  implements LoadUserByUsernameAndPasswordRepository, AddUserRepository
+  implements
+    LoadUserByUsernameAndPasswordRepository,
+    AddUserRepository,
+    LoadUserByUsernameRepository
 {
   constructor() {
     super(db, "users");
@@ -22,6 +29,16 @@ export class User
       .selectAll()
       .where("username", "=", params.username)
       .where("password", "=", params.password)
+      .executeTakeFirst();
+
+    return result ?? null;
+  }
+
+  async loadByUsername(params: LoadUserByUsernameRepositoryParams) {
+    const result = await db
+      .selectFrom("users")
+      .selectAll()
+      .where("username", "=", params.username)
       .executeTakeFirst();
 
     return result ?? null;

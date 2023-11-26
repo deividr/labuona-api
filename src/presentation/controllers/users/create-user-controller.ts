@@ -5,6 +5,7 @@ import {
   CreateUserParams,
   CreateUserReturn,
 } from "@domain/usecases";
+import { AlreadyExists } from "../../../errors";
 
 export class CreateUserController
   implements Controller<CreateUserParams, CreateUserReturn>
@@ -26,6 +27,10 @@ export class CreateUserController
 
       return created(newUser);
     } catch (error: any) {
+      if (error instanceof AlreadyExists) {
+        return badRequest(error);
+      }
+
       return serverError(error);
     }
   }

@@ -13,6 +13,8 @@ services:
       - postgres
     links:
       - "postgres:db"
+    networks:
+      - labuona_network
 
   # api-test:
   #   build:
@@ -31,3 +33,9 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
       POSTGRES_DB: labuonapasta
       POSTGRES_USER: postgres
+    networks:
+      - labuona_network
+
+networks:
+  labuona_network:
+    driver: bridge

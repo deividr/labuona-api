@@ -1,10 +1,11 @@
 import { test } from "tap";
 import { faker } from "@faker-js/faker";
-import { Validation } from "@presentation/protocols";
-import { CreateUser, CreateUserParams } from "@domain/usecases";
-import { CreateUserController } from "./create-user-controller";
-import { badRequest, serverError } from "../../helpers";
-import { UserSanitize } from "@domain/models";
+import { Validation } from "../../../../src/presentation/protocols";
+import { CreateUser, CreateUserParams } from "../../../../src/domain/usecases";
+import { CreateUserController } from "../../../../src/presentation/controllers/users/create-user-controller";
+import { badRequest, serverError } from "../../../../src/presentation/helpers";
+import { UserSanitize } from "../../../../src/domain/models";
+import { AlreadyExists } from "../../../../src/errors";
 
 class CreateUserValidationSpy implements Validation<CreateUserParams> {
   createUserRequest: CreateUserParams = {
@@ -38,7 +39,8 @@ class CreateUserSpy implements CreateUser {
     );
 
     const newUser: UserSanitize = {
-      ...createUserRequestReceived,
+      username: createUserRequestReceived.userName,
+      name: createUserRequestReceived.name,
       id: faker.string.uuid(),
       createdAt: new Date(),
       updatedAt: null,
@@ -148,5 +150,19 @@ test("Create User Controller", async (t) => {
     t.hasOwnProp(response.body, "createdAt");
     t.hasOwnProp(response.body, "updatedAt");
     t.hasOwnProp(response.body, "isDeleted");
+  });
+
+  t.test("should return 400 if user already exists", async (t) => {
+    const { sut, createUserSpy } = makeSut();
+
+    const error = new AlreadyExists("Usuário já existe");
+
+    createUserSpy.create = () => {
+      throw error;
+    };
+
+    const result = await sut.handle(mockRequest());
+
+    t.match(result, badRequest(error));
   });
 });
